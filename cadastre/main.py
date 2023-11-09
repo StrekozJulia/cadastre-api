@@ -1,7 +1,6 @@
 import uvicorn
 import requests
 import time
-import json
 from random import choice
 import starlette.status as status
 
@@ -28,11 +27,6 @@ def get_answer(request=None):
     При их отсутствии при помощи get проверяется доступность сервера.
     """
     if request:
-        # request_json = json.dumps({
-        #     "cadstre_num": request.cadastre_num,
-        #     "latitude": request.latitude,
-        #     "longitude": request.longitude
-        # })
         response = requests.post(
                 'https://get_answer.com',
                 request
@@ -50,11 +44,9 @@ def mock_get_answer(mock_get, mock_post, request=None,):
     """
     Функция-обманка для эмуляции запроса к серверу
     """
-    # if request:
     result = {"result": choice([True, False])}
     mock_post.return_value = Mock(ok=True)
     mock_post.return_value.json.return_value = result
-    # else:
     mock_get.return_value = Mock(ok=True)
     response = get_answer(request)
     if request:
