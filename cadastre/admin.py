@@ -1,5 +1,5 @@
 from sqladmin import ModelView
-from models import QueryModel
+from .models import QueryModel
 
 
 class QueryAdmin(ModelView, model=QueryModel):

@@ -11,10 +11,10 @@ from sqladmin import Admin
 from typing import Optional
 from unittest.mock import patch, Mock
 
-from database import db, engine
-from models import QueryModel, Base
-from schemas import QuerySchema
-from admin import QueryAdmin
+from .database import db, engine
+from .models import QueryModel, Base
+from .schemas import QuerySchema
+from .admin import QueryAdmin
 
 SERVER_STATUS_OK = True
 
