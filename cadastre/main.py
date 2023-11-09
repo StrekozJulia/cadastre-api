@@ -7,13 +7,16 @@ import starlette.status as status
 from datetime import datetime
 from fastapi import FastAPI
 from fastapi.responses import RedirectResponse
+from sqladmin import Admin
 from typing import Optional
 from unittest.mock import patch, Mock
 
+from database import db, engine
 from models import QueryModel, Base
 from schemas import QuerySchema
-from database import db, engine
+from admin import QueryAdmin
 
+SERVER_STATUS_OK = True
 
 Base.metadata.create_all(bind=engine)
 
@@ -45,9 +48,9 @@ def mock_get_answer(mock_get, mock_post, request=None,):
     Функция-обманка для эмуляции запроса к серверу
     """
     result = {"result": choice([True, False])}
-    mock_post.return_value = Mock(ok=True)
+    mock_post.return_value = Mock(ok=SERVER_STATUS_OK)
     mock_post.return_value.json.return_value = result
-    mock_get.return_value = Mock(ok=True)
+    mock_get.return_value = Mock(ok=SERVER_STATUS_OK)
     response = get_answer(request)
     if request:
         # Имитация выполнения запроса длительностью до 60 секунд
@@ -88,6 +91,12 @@ def query(query: QuerySchema):
             "latitude": query.latitude,
             "longitude": query.longitude
         }
+    response = mock_get_answer(request=data)
+    if not response.ok:
+        return RedirectResponse(
+            "/ping",
+            status_code=status.HTTP_302_FOUND
+        )
     data["answer"] = mock_get_answer(request=data).json()['result']
     result = add_query(data)
     return RedirectResponse(
@@ -111,6 +120,10 @@ def history(cadastre_num: Optional[str] = None):
         return result.filter(QueryModel.cadastre_num == cadastre_num).all()
     return result.all()
 
+
+# Регистрация админ-панели
+admin = Admin(app, engine)
+admin.add_view(QueryAdmin)
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000)
