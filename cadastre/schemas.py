@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field, validator
+from pydantic import BaseModel, Field, field_validator
 
 cadastre_regex = r'^\d{2}:\d{2}:\d{6,7}:\d+$'
 latitude_regex = r'^[+-]?\d{1,2}.\d+$'
@@ -10,7 +10,7 @@ class QuerySchema(BaseModel):
     latitude: str = Field(pattern=latitude_regex)
     longitude: str = Field(pattern=longitude_regex)
 
-    @validator('latitude', allow_reuse=True)
+    @field_validator('latitude')
     def latitude_validator(cls, value: str):
         if value[0] in ('+-'):
             float_value = float(value[1:])
@@ -20,7 +20,7 @@ class QuerySchema(BaseModel):
             raise ValueError('Latitude should get value between -90 and +90')
         return value
 
-    @validator('longitude', allow_reuse=True)
+    @field_validator('longitude')
     def longitude_validator(cls, value: str):
         if value[0] in ('+-'):
             float_value = float(value[1:])
