@@ -1,6 +1,7 @@
 fastapi[all]
 uvicorn[standart]
 sqlalchemy
-gunicorn
 requests
 sqladmin
+pytest
+pytest-cov
