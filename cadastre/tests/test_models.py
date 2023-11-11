@@ -1,8 +1,9 @@
 import pytest
 from datetime import datetime
 from sqlalchemy.exc import IntegrityError
+
 from cadastre.models import Base, QueryModel
-from cadastre.database import SessionLocal, engine
+from cadastre.database import engine, SessionLocal
 
 
 class TestQuery:
@@ -16,6 +17,10 @@ class TestQuery:
         Base.metadata.drop_all(engine)
 
     def test_add_valid_data(self):
+        """
+        Тестирование создания модели QueryModel при
+        вводе валидных данных
+        """
         self.session.add(QueryModel(
             cadastre_num="47:14:1203001:814",
             latitude="+18.65",
@@ -35,6 +40,10 @@ class TestQuery:
 
     @pytest.mark.xfail(raises=IntegrityError)
     def test_add_invalid_cadastre_num(self):
+        """
+        Тестирование попытки создания модели QueryModel при
+        вводе невалидного кадастрововго номера
+        """
         query = QueryModel(
             cadastre_num="5",
             latitude="+18.65",
@@ -50,6 +59,10 @@ class TestQuery:
 
     @pytest.mark.xfail(raises=IntegrityError)
     def test_add_invalid_latitude(self):
+        """
+        Тестирование попытки создания модели QueryModel при
+        вводе невалидного значения широты
+        """
         query = QueryModel(
             cadastre_num="47:14:1203001:814",
             latitude="+180.65",
@@ -65,6 +78,10 @@ class TestQuery:
 
     @pytest.mark.xfail(raises=IntegrityError)
     def test_add_invalid_longitude(self):
+        """
+        Тестирование попытки создания модели QueryModel при
+        вводе невалидного значения долготы
+        """
         query = QueryModel(
             cadastre_num="47:14:1203001:814",
             latitude="+18.65",
@@ -80,6 +97,10 @@ class TestQuery:
 
     @pytest.mark.xfail(raises=IntegrityError)
     def test_add_invalid_answer(self):
+        """
+        Тестирование попытки создания модели QueryModel при
+        вводе невалидного ответа с удаленного сервера
+        """
         query = QueryModel(
             cadastre_num="47:14:1203001:814",
             latitude="+18.65",

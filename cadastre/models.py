@@ -10,6 +10,7 @@ Base = declarative_base()
 
 
 class QueryModel(Base):
+    """Модель запроса"""
     __tablename__ = "queries"
 
     id = Column(Integer, primary_key=True, index=True)

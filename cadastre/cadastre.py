@@ -1,5 +1,5 @@
-import requests
 import json
+import requests
 import starlette.status as status
 
 from datetime import datetime
@@ -7,8 +7,9 @@ from fastapi import FastAPI
 from fastapi.responses import RedirectResponse
 from typing import Optional
 
+from .constants import SERVER_URL
 from .database import db, engine
-from .models import QueryModel, Base
+from .models import Base, QueryModel
 from .schemas import QuerySchema
 
 Base.metadata.create_all(bind=engine)
@@ -18,12 +19,12 @@ cadastre = FastAPI()
 
 def get_remote():
     """Get-запрос к удаленному серверу"""
-    return requests.get('http://localhost/server/ping')
+    return requests.get(SERVER_URL + '/ping')
 
 
 def post_remote(data):
     """Post-запрос к удаленному серверу"""
-    return requests.post('http://localhost/server/get_answer', data)
+    return requests.post(SERVER_URL + '/get_answer', data)
 
 
 def add_query(data):

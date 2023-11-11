@@ -1,17 +1,18 @@
 from pydantic import BaseModel, Field, field_validator
 
-cadastre_regex = r'^\d{2}:\d{2}:\d{6,7}:\d+$'
-latitude_regex = r'^[+-]?\d{1,2}.\d+$'
-longitude_regex = r'^[+-]?1?\d{1,2}.\d+$'
+from .constants import (CADASTRE_REGEX,
+                        LATITUDE_REGEX,
+                        LONGITUDE_REGEX)
 
 
 class QuerySchema(BaseModel):
-    cadastre_num: str = Field(pattern=cadastre_regex)
-    latitude: str = Field(pattern=latitude_regex)
-    longitude: str = Field(pattern=longitude_regex)
+    cadastre_num: str = Field(pattern=CADASTRE_REGEX)
+    latitude: str = Field(pattern=LATITUDE_REGEX)
+    longitude: str = Field(pattern=LONGITUDE_REGEX)
 
     @field_validator('latitude')
     def latitude_validator(cls, value: str):
+        """Проверяем, что значение широты в пределах +-90 градусов"""
         if value[0] in ('+-'):
             float_value = float(value[1:])
         else:
@@ -22,6 +23,7 @@ class QuerySchema(BaseModel):
 
     @field_validator('longitude')
     def longitude_validator(cls, value: str):
+        """Проверяем, что значение долготы в пределах +-180 градусов"""
         if value[0] in ('+-'):
             float_value = float(value[1:])
         else:

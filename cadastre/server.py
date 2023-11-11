@@ -8,11 +8,13 @@ server = FastAPI()
 
 @server.get('/ping')
 def ping():
+    """Отклик удаленного сервера на get-запрос"""
     return status.HTTP_200_OK
 
 
 @server.post('/get_answer')
 def get_answer(request=Body()):
+    """Отклик удаленного сервера на post-запрос"""
     if (
         request['cadastre_num'] and
         request['latitude'] and

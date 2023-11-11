@@ -1,8 +1,12 @@
 from sqladmin import ModelView
+
 from .models import QueryModel
 
 
 class QueryAdmin(ModelView, model=QueryModel):
+    """
+    Регистрация модели QueryModel в admin-панели
+    """
     column_list = [
         QueryModel.cadastre_num,
         QueryModel.answer,
