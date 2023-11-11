@@ -17,10 +17,12 @@ cadastre = FastAPI()
 
 
 def get_remote():
+    """Get-запрос к удаленному серверу"""
     return requests.get('http://localhost/server/ping')
 
 
 def post_remote(data):
+    """Post-запрос к удаленному серверу"""
     return requests.post('http://localhost/server/get_answer', data)
 
 
@@ -37,7 +39,7 @@ def add_query(data):
     db.add(query)
     db.commit()
     db.refresh(query)
-    return query
+    return query.id
 
 
 @cadastre.get("/ping")
@@ -64,17 +66,17 @@ def query(query: QuerySchema):
             status_code=status.HTTP_302_FOUND
         )
     data["answer"] = response.json()['result']
-    result = add_query(data)
+    query_id = add_query(data)
     return RedirectResponse(
-        f"/cadastre/result/{result.id}",
+        f"/cadastre/result/{query_id}",
         status_code=status.HTTP_302_FOUND
     )
 
 
-@cadastre.get("/result/{result_id}")
-def result(result_id):
+@cadastre.get("/result/{query_id}")
+def result(query_id):
     """Выдача результатов запроса на удаленный сервер"""
-    query = db.query(QueryModel).filter(QueryModel.id == result_id).first()
+    query = db.query(QueryModel).filter(QueryModel.id == query_id).first()
     return query.answer
 
 
